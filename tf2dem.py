@@ -38,8 +38,6 @@ class Demo(object):
             self.ticks = data[7]
             self.frames = data[8]
             self.tickrate = int(self.ticks / self.time)
-        if self.gamedir != 'tf':
-            raise NotDemoError('The input is not a tf2 demo file.')
 
     def __repr__(self):
         return 'Demo(host={}, map={}, ticks={})'.format(repr(self.host_name), repr(self.map_name), repr(self.ticks))

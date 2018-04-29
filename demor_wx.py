@@ -28,7 +28,12 @@ class Demor(wx.Frame):
         FileSizer.Add(self.FileLabel, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
         self.FilePicker = wx.FilePickerCtrl(self, wx.ID_ANY, wx.EmptyString, "Select Demo", "Demo (*.dem)|*.dem", wx.DefaultPosition, wx.Size(-1,-1), wx.FLP_DEFAULT_STYLE|wx.FLP_FILE_MUST_EXIST|wx.FLP_OPEN)
         FileSizer.Add(self.FilePicker, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
-        MainSizer.Add(FileSizer, 1, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
+        MainSizer.Add(FileSizer, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
+        GameSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.GameText = wx.StaticText(self, wx.ID_ANY, "Game: None", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.GameText.Wrap(-1)
+        GameSizer.Add(self.GameText, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5)
+        MainSizer.Add(GameSizer, 1, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         HostSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.HostText = wx.StaticText(self, wx.ID_ANY, "Host: None", wx.DefaultPosition, wx.DefaultSize, 0)
         self.HostText.Wrap(-1)
@@ -67,9 +72,13 @@ class Demor(wx.Frame):
         try:
             self.demo_file = tf2dem.Demo(path)
             self.SaveButton.Enable(True)
+            self.GameText.Label = 'Game: {}'.format(self.demo_file.gamedir)
             self.HostText.Label = 'Host: {}'.format(self.demo_file.host_name)
             self.MapText.Label = 'Map: {}'.format(self.demo_file.map_name)
             self.TicksText.Label = 'Ticks: {}'.format(self.demo_file.ticks)
+            if self.demo_file.gamedir != 'tf':
+                self.SaveButton.Enable(False)
+                return False
             return True
         except tf2dem.NotDemoError:
             self.ClearDemo()
@@ -80,6 +89,7 @@ class Demor(wx.Frame):
     def ClearDemo(self):
         self.demo_file = None
         self.SaveButton.Enable(False)
+        self.GameText.Label = 'Game: None'
         self.HostText.Label = 'Host: None'
         self.MapText.Label = 'Map: None'
         self.TicksText.Label = 'Ticks: None'
