@@ -26,7 +26,7 @@ class Demo(object):
         with open(demo_file, 'rb') as dem:
             head = struct.unpack('8s', dem.read(8))[0].decode('utf-8')
             if head != 'HL2DEMO\x00':
-                raise NotDemoError('Input is not a hl2 demo file.')
+                raise NotDemoError('The input is not a tf2 demo file.')
             data = struct.unpack(struct_fmt, dem.read(struct_len))
             self.demo_prot = data[0]
             self.net_prot = data[1]
@@ -38,6 +38,8 @@ class Demo(object):
             self.ticks = data[7]
             self.frames = data[8]
             self.tickrate = int(self.ticks / self.time)
+        if self.gamedir != 'tf':
+            raise NotDemoError('The input is not a tf2 demo file.')
 
     def __repr__(self):
         return 'Demo(host={}, map={}, ticks={})'.format(repr(self.host_name), repr(self.map_name), repr(self.ticks))
